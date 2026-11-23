@@ -1,0 +1,45 @@
+Classification of image 3 (Simulated Email Header) and 4 (VirusTotal URL SearchResults):
+-------------------------------------------------------------------------
+The SHA-256 hash of the training file was generated using Windows Command Prompt.
+
+Analysis Details:
+-------------------------------------------------------------------------
+1.Tool Windows Command Prompt.
+2.Hash Algorithm SHA-256.
+3.Command certutil -hashfile Account_Verification.html SHA256.
+4.Analysis Platform VirusTotal.
+5.Search Type SHA-256 hash search.
+
+VirusTotal Results:
+-------------------------------------------------------------------------
+1.No matching community comments were found for the search query.
+2.No malware detection verdict was established from the displayed comments page.
+3.The file's maliciousness could not be determined from this result.
+
+Conclusion:
+-------------------------------------------------------------------------
+SHA-256 hash generation was successfully performed. VirusTotal community comments were not available for the searched hash. Further analysis using the actual file analysis page would be required to determine whether the file is malicious.
+
+
+
+
+DNSChecker – Email Authentication Analysis:
+-------------------------------------------------------------------------
+DNSChecker was used to examine the DNS email authentication records associated with the sample sender domain.
+
+Authentication Records Checked:
+-------------------------------------------------------------------------
+1. SPF (Sender Policy Framework): Checks whether the sending mail server is authorized to send emails on behalf of a domain.
+2. DKIM (DomainKeys Identified Mail): Uses a public key published in DNS to verify an email's cryptographic signature. A selector is required to locate the correct DKIM record.
+3. DMARC (Domain-based Message Authentication, Reporting and Conformance): Defines how receiving mail servers should handle messages that fail SPF/DKIM authentication and alignment checks.
+
+Analysis Findings:
+-------------------------------------------------------------------------
+- SPF: No record found / no result available.
+- DKIM: No record verified.
+- DMARC: No DMARC record found.
+- Authentication status: Could not be verified using the available DNS information.
+
+Conclusion:
+-------------------------------------------------------------------------
+The DNS lookup did not provide sufficient email authentication records to verify the sender domain. Additional investigation using the original email headers and valid DNS records would be required.

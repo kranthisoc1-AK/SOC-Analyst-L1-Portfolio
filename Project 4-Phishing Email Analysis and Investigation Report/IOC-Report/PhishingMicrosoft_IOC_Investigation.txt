@@ -1,0 +1,58 @@
+PHISHING EMAIL – IOC INVESTIGATION
+--------------------------------------------------------------------------
+Incident Name: Microsoft 365 Password Expiration Phishing  
+Incident Type: Phishing / Credential Theft  
+Severity: High (training assessment)  
+Investigation Status: Training Investigation Completed
+
+IOC 1: Sender Email:
+-----------------------------------------------------------------------------
+- Type: Sender Email Address
+- Value: support@microsoft-security.example
+- Observation: Unfamiliar sender domain impersonating Microsoft support.
+
+IOC 2: Suspicious Domain:
+-------------------------------------------------------------------------------
+- Type: Domain
+- Value: microsoft-security.example
+- Observation: Uses Microsoft-related wording in an unfamiliar domain.
+
+IOC 3: Suspicious URL:
+------------------------------------------------------------------------------
+- Type: URL
+- Value: http://m365-password-check.example/reset
+- Protocol: HTTP
+- Path: /reset
+- Observation: Password-reset URL with an unfamiliar domain.
+
+IOC 4: Suspicious Attachment:
+--------------------------------------------------------------------------------
+- Type: Attachment
+- Value: Password_Reset.html
+- Observation: Unexpected HTML attachment associated with a password-reset request.
+
+IOC 5: Email Subject:
+--------------------------------------------------------------------------------
+- Type: Email Subject
+- Value: Your Password Expires Today!
+- Observation: Creates urgency to encourage immediate action.
+
+Risk Assessment:
+------------------------------------------------------------------------------
+Risk Level: High (training assessment)
+
+Reason: The email contains multiple phishing indicators, including an unfamiliar sender domain, urgent password-expiration message, suspicious URL and unexpected attachment.
+
+Recommended SOC Analyst Actions:
+---------------------------------------------------------------------------------
+1. Do not click the URL.
+2. Do not open the attachment.
+3. Preserve the original email and headers.
+4. Investigate sender and domain reputation.
+5. Check SPF, DKIM and DMARC results.
+6. Search security logs for possible user interaction.
+7. Escalate findings to the appropriate security team.
+
+Conclusion:
+----------------------------------------------------------------------------------------
+The email exhibits multiple characteristics of a possible Microsoft 365 credential-phishing attempt. Further investigation is required before confirming it as malicious.

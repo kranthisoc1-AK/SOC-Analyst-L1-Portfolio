@@ -1,0 +1,79 @@
+* Phishing Email Analysis and Investigation Report
+
+1. Project Overview:
+
+This project demonstrates how a SOC Analyst L1 investigates a suspected phishing email, identifies suspicious indicators, analyzes email authentication results, investigates URLs, and documents Indicators of Compromise (IOCs).
+
+2. Incident Details
+
+- Incident Name: Microsoft 365 Password Expiration Phishing
+- Incident Type: Phishing / Credential Theft
+- Severity: High (training assessment)
+- Status: Training investigation completed
+- Environment: Windows 11
+
+3. Email Analysis
+
+- Sender: support@microsoft-security.example
+- Subject: Your Password Expires Today!
+- Suspicious URL: http://m365-password-check.example/reset
+- Attachment: Password_Reset.html
+
+Identified phishing indicators:
+
+- Suspicious sender domain
+- Urgent subject line
+- Request for account verification
+- Suspicious login URL
+- Unexpected HTML attachment
+
+4. Email Header Analysis:
+
+Simulated authentication results:
+- SPF: Fail
+- DKIM: Fail
+- DMARC: Fail
+
+These failures indicate authentication problems and possible sender spoofing. Further investigation would be required in a real incident.
+
+## 5. URL Investigation
+
+- Protocol: HTTP
+- Domain: m365-password-check.example
+- Path: /reset
+
+The URL was identified as suspicious based on its unfamiliar domain, password-reset wording and credential-verification context. No live malicious URL was accessed.
+
+6. Indicators of Compromise (IOCs)
+
+|                        IOC Type                                                |                            Value                                 |
+|--------------------------------------------------------------------------------|------------------------------------------------------------------|
+| Sender Email                                                                   |                support@microsoft-security.example                |
+| Domain                                                                         |                   microsoft-security.example                     |
+| URL                                                                            |              http://m365-password-check.example/reset            |
+| Attachment                                                                     |                       Password_Reset.html                        |
+| Email Subject                                                                  |                   Your Password Expires Today!                   |
+
+7. Attachment Hash Analysis:
+
+- Tool: Windows certutil
+- Algorithm: SHA-256
+- Command: certutil -hashfile Password_Reset.html SHA256
+- File: Harmless training file
+- VirusTotal result: No existing analysis/comments found
+
+This result does not establish whether a real suspicious attachment is safe or malicious.
+
+8. SOC Analyst Recommended Actions:
+
+1. Do not click suspicious links.
+2. Do not open unexpected attachments.
+3. Preserve the original email and full headers.
+4. Investigate sender, domain, URL and attachment.
+5. Check relevant security logs for user interaction.
+6. Escalate confirmed suspicious activity.
+7. Follow organizational procedures for blocking and containment.
+
+9. Conclusion:
+
+This training project demonstrates the basic phishing investigation workflow used by a SOC Analyst L1. It covers email analysis, authentication checks, URL inspection, IOC identification and SHA-256 hash analysis.

@@ -1,0 +1,18 @@
+From: security-alert@fakebank.example
+To: soc-analyst@example.com
+Subject: Urgent! Your Bank Account Will Be Blocked
+
+Dear Customer,
+
+We detected unusual activity on your bank account.
+
+Your account will be blocked within 24 hours.
+Please verify your account immediately.
+
+Verification URL:
+http://fakebank-login.example/verify
+
+Attachment: Account_Verification.html
+
+Regards,
+Bank Security Team
