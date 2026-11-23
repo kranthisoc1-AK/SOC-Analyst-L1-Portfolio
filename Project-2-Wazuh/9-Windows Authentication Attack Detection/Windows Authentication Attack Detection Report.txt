@@ -1,0 +1,170 @@
+# Module 10 – Windows Authentication Attack Detection
+
+## 1. Project Overview
+
+**Project:** Windows Authentication Attack Detection using Wazuh  
+**Module:** 10 – SOC Analyst L1 Practical Training  
+**Date:** 16 November 2026  
+**Endpoint:** Windows 11  
+**Hostname:** DESKTOP-L29HLL9  
+**Wazuh Agent ID:** 002  
+**Wazuh Agent Version:** 4.14.10  
+**SIEM Platform:** Wazuh
+
+### Objective
+
+To monitor and investigate Windows authentication activities using Windows Security Event Logs and Wazuh. The objective was to identify successful logins, failed login attempts, account lockout events, password changes, password resets and possible brute-force activity.
+
+## 2. Tools and Technologies
+
+- Wazuh SIEM
+- Windows 11
+- Windows Event Viewer
+- Windows Security Event Logs
+- Ubuntu WSL2
+- Docker
+- Wazuh Dashboard
+
+## 3. Activities Performed
+
+### 3.1 Successful Login Monitoring – Event ID 4624
+
+Investigated successful Windows login events through Wazuh Dashboard.
+
+**Purpose:** Identify successful account authentication activity.
+
+**Result:** Successful login events were visible in Wazuh.
+
+### 3.2 Failed Login Monitoring – Event ID 4625
+
+Investigated failed Windows authentication attempts.
+
+Reviewed the following fields:
+
+- TargetUserName
+- IpAddress
+- Status
+- SubStatus
+- Event timestamp
+
+**Purpose:** Identify failed authentication attempts and investigate possible password guessing.
+
+**Result:** Event ID 4625 records were visible in Wazuh and investigated.
+
+### 3.3 Account Lockout Investigation – Event ID 4740
+
+Searched Wazuh for account lockout events.
+
+**Purpose:** Identify Windows accounts locked after repeated unsuccessful authentication attempts.
+
+**Result:** Event ID 4740 was investigated. A confirmed matching Wazuh alert was not established.
+
+### 3.4 Password Change Investigation – Event ID 4723
+
+Generated and verified a password-change attempt event using Windows Event Viewer.
+
+**Purpose:** Monitor attempts to change account passwords.
+
+**Result:** Event ID 4723 was confirmed locally in Windows Event Viewer. Wazuh ingestion remains unverified.
+
+### 3.5 Password Reset Investigation – Event ID 4724
+
+Investigated password-reset activity using Windows Event Viewer.
+
+**Purpose:** Monitor attempts to reset account passwords.
+
+**Result:** Event ID 4724 was verified in Windows Event Viewer. Wazuh ingestion remains unverified.
+
+### 3.6 Brute-Force Detection Rule
+
+Configured a custom Wazuh rule:
+
+- Rule ID: 100100
+- Severity: Level 12
+- Frequency: 5 events
+- Timeframe: 120 seconds
+- Detection condition: Repeated matching failed-login events
+- MITRE ATT&CK: T1110 – Brute Force
+
+**Result:** The rule was configured and validated syntactically. A matching alert was not observed in the Wazuh Dashboard.
+
+### 3.7 Authentication Event Correlation
+
+Reviewed successful and failed authentication events together.
+
+Events investigated:
+
+- 4624 – Successful login
+- 4625 – Failed login
+
+**Purpose:** Compare successful and unsuccessful authentication activity during an investigation.
+
+### 3.8 Authentication Monitoring Visualization
+
+Created and saved a Wazuh visualization.
+
+**Visualization title:** Windows Authentication Monitoring – 4624 vs 4625
+
+**Chart type:** Pie Chart
+
+**Field:** data.win.system.eventID
+
+**Purpose:** Compare successful and failed Windows authentication events.
+
+## 4. Wazuh Security Event Collection Verification
+
+During troubleshooting, the Windows Security event collection configuration was temporarily simplified by removing the Security channel query filter.
+
+After restarting the Wazuh agent, Security events were successfully observed in the Wazuh archive.
+
+Example:
+
+- Event ID: 4798
+- Description: A user's local group membership was enumerated.
+- Agent: DESKTOP-L29HLL9
+- Agent ID: 002
+- Channel: Security
+
+This confirmed that Windows Security events were reaching the Wazuh Manager.
+
+The temporary JSON archiving configuration was subsequently restored to its original setting, and the Wazuh Manager was restarted.
+
+Final verification confirmed that the Windows agent was Active.
+
+## 5. Findings and Validation Status
+
+| Activity | Findings | Status |
+|---|---|---|
+| Event ID 4624 | Successful login events observed | Completed |
+| Event ID 4625 | Failed login events observed and investigated | Completed |
+| Event ID 4740 | Account lockout search performed | Checked; alert not confirmed |
+| Event ID 4723 | Verified in Windows Event Viewer | Local verification complete; Wazuh pending |
+| Event ID 4724 | Verified in Windows Event Viewer | Local verification complete; Wazuh pending |
+| Custom Rule 100100 | Rule configured; no matching alert observed | Pending validation |
+| Authentication visualization | Pie chart created and saved | Completed |
+| Security event collection | Event ID 4798 received by Wazuh | Verified |
+| Wazuh agent | Agent ID 002 Active | Verified |
+
+## 6. Evidence and Screenshots
+
+The following screenshots should be included in the project evidence folder:
+
+1. Event ID 4624 – Successful Login
+2. Event ID 4625 – Failed Login Investigation
+3. Event ID 4723 – Password Change (Windows Event Viewer)
+4. Event ID 4724 – Password Reset (Windows Event Viewer)
+5. Event ID 4740 – Account Lockout Search, if captured
+6. Windows Authentication Monitoring Pie Chart
+7. Wazuh Agent Status, if captured
+
+## 7. Conclusion
+
+This practical module demonstrated Windows authentication monitoring and investigation using Wazuh SIEM.
+
+Successful and failed login events were investigated, password-change and password-reset events were verified locally through Windows Event Viewer, and a custom brute-force detection rule was configured.
+
+An authentication monitoring visualization was also created to compare successful and failed login events.
+
+The exercise provided practical experience in Windows Security Event Log analysis, authentication investigation, SIEM monitoring, custom rule configuration and basic security event correlation.
+
+Some detections, including Wazuh ingestion of Event IDs 4723 and 4724 and custom brute-force alert generation, remain pending validation. These limitations have been documented accurately.

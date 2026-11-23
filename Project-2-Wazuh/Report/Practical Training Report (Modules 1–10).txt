@@ -1,0 +1,121 @@
+# SOC Analyst Level 1 – Practical Training Final Report
+
+**Training Coverage:** Modules 1–10  
+**Focus:** Security Operations, SIEM Monitoring, Threat Detection, Log Analysis, and Incident Investigation
+
+## 1. Introduction
+
+This report summarizes the theoretical learning and practical exercises completed during SOC Analyst Level 1 training, covering Modules 1 through 10.
+
+The training focused on understanding SOC operations, monitoring security events, identifying suspicious activities, investigating alerts, and using security tools to analyze Windows endpoints and network activity.
+
+## 2. Modules Covered
+
+### Module 1 – SOC Fundamentals
+- Understanding Security Operations Center (SOC) functions.
+- Learning SOC Analyst responsibilities.
+- Understanding L1, L2, and L3 analyst roles.
+- Learning alert monitoring, triage, escalation, and incident response workflows.
+
+### Module 2 – SIEM Fundamentals
+- Understanding Security Information and Event Management (SIEM).
+- Learning log collection, normalization, correlation, and alert generation.
+- Understanding security event monitoring and investigation.
+- Learning how SIEM supports threat detection.
+
+### Module 3 – Splunk SIEM
+- Working with Splunk for security monitoring.
+- Searching and analyzing Windows event logs.
+- Practicing SPL searches and statistical queries.
+- Creating dashboards and visualizations.
+- Configuring a brute-force detection alert using Windows Security logs.
+
+### Module 4 – Phishing Detection
+- Understanding phishing attacks and their indicators.
+- Analyzing suspicious email senders, subjects, URLs, and attachments.
+- Learning SPF, DKIM, and DMARC email authentication.
+- Using VirusTotal for URL and file reputation checks.
+- Preparing a phishing investigation report using a simulated phishing email.
+
+### Module 5 – Brute-Force Attack Detection
+- Understanding brute-force and password-spraying attacks.
+- Investigating failed login events.
+- Analyzing Windows Event ID 4625.
+- Monitoring repeated authentication failures.
+- Creating a Splunk brute-force detection alert and dashboard.
+
+### Module 6 – Windows Persistence Detection
+- Understanding common Windows persistence techniques.
+- Investigating scheduled tasks and service creation.
+- Reviewing Windows Registry Run key locations.
+- Analyzing Windows Event IDs related to persistence, including scheduled-task and service events.
+- Using Sysmon and Windows Event Viewer for process and system investigation.
+- Performing practical checks for suspicious persistence indicators.
+
+### Module 7 – PowerShell Attack Detection
+- Understanding PowerShell-based attacks.
+- Monitoring PowerShell activity using Windows logs.
+- Investigating PowerShell Script Block Logging, Event ID 4104.
+- Reviewing process execution and command-line activity.
+- Examining Wazuh alerts, including rule ID 91816.
+- Practicing PowerShell event investigation.
+
+### Module 8 – Malware and Suspicious File Detection
+- Understanding malware and suspicious file indicators.
+- Investigating file activity using Windows Defender events.
+- Learning File Integrity Monitoring (FIM) using Wazuh.
+- Monitoring changes in selected Windows directories.
+- Reviewing file hashes and checking reputation using VirusTotal.
+- Investigating security alerts and distinguishing detection results from confirmed infection.
+
+### Module 9 – Network Attack Detection
+- Understanding network-based threats and suspicious connections.
+- Analyzing DNS, TCP, and UDP traffic using Wireshark.
+- Practicing network traffic filtering and investigation.
+- Reviewing listening ports and associated processes.
+- Investigating connections associated with Windows, WSL, Docker, Splunk, and other system services.
+- Learning to identify unusual network activity through process and connection analysis.
+
+### Module 10 – Windows Authentication Attack Detection
+- Understanding Windows authentication events and account-related threats.
+- Investigating successful logons using Event ID 4624.
+- Investigating failed logons using Event ID 4625.
+- Reviewing account lockout and password-related events.
+- Examining Event IDs 4723 and 4724 for password change and password reset activity.
+- Creating a Wazuh authentication monitoring visualization comparing successful and failed logons.
+- Practicing Windows Security log investigation and alert analysis.
+
+## 3. Tools and Technologies Used
+
+| Tool / Technology | Practical Usage |
+|---|---|
+| Splunk | Log analysis, SPL searches, alerts, dashboards |
+| Wazuh | Endpoint monitoring, security alerts, FIM, event investigation |
+| Sysmon | Process creation and endpoint activity monitoring |
+| Windows Event Viewer | Windows Security and System log investigation |
+| PowerShell | Event collection, process analysis, system investigation |
+| Wireshark | Network traffic analysis |
+| VirusTotal | File hash and URL reputation checks |
+| Windows Defender | Malware and security event investigation |
+
+## 4. Practical Skills Developed
+
+- Security event monitoring and log analysis.
+- SIEM alert investigation and basic correlation.
+- Windows endpoint monitoring.
+- Suspicious process and command-line investigation.
+- Phishing email analysis.
+- Brute-force attack indicator investigation.
+- PowerShell activity monitoring.
+- Persistence mechanism investigation.
+- Network traffic and connection analysis.
+- Authentication event investigation.
+- Basic security documentation and reporting.
+
+## 5. Conclusion
+
+The first ten modules provided practical exposure to SOC Analyst Level 1 responsibilities and security monitoring workflows. Through hands-on exercises with Splunk, Wazuh, Sysmon, PowerShell, Windows Event Viewer, Wireshark, and VirusTotal, I developed foundational skills in log analysis, threat detection, alert investigation, and endpoint monitoring.
+
+The training strengthened my understanding of how SOC analysts monitor security events, identify suspicious activities, investigate potential threats, and document findings for further analysis.
+
+**Report Scope:** SOC Analyst Level 1 – Modules 1 to 10.

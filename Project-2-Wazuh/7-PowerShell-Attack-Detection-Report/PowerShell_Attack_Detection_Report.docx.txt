@@ -1,0 +1,150 @@
+# PowerShell Attack Detection Using Wazuh and Sysmon
+
+## 1. Project Overview
+
+**Project Name:** PowerShell Attack Detection  
+**Platform:** Windows 11  
+**SIEM:** Wazuh 4.14.10  
+**Endpoint Monitoring:** Wazuh Windows Agent  
+**Process Monitoring:** Sysmon  
+**Log Analysis:** Wazuh Threat Hunting
+
+## 2. Objective
+
+The objective of this project was to monitor PowerShell activity, identify suspicious command execution patterns, and investigate PowerShell events using Wazuh.
+
+The project demonstrates how a SOC Analyst L1 can review endpoint activity, investigate alerts, and distinguish normal administrative activity from potentially suspicious behavior.
+
+## 3. Lab Environment
+
+| Component | Configuration |
+|---|---|
+| Operating System | Windows 11 |
+| Hostname | DESKTOP-L29HLL9 |
+| SIEM | Wazuh 4.14.10 |
+| Endpoint Agent | Wazuh Agent 4.14.10 |
+| Process Monitoring | Sysmon |
+| Log Source | PowerShell Operational |
+| Event Monitoring | Windows Event Logs |
+
+## 4. PowerShell Logging Configuration
+
+Enabled PowerShell Script Block Logging through the Windows registry.
+
+Configured the Wazuh agent to collect:
+
+- Microsoft-Windows-PowerShell/Operational
+- Microsoft-Windows-Sysmon/Operational
+- Windows Security events
+- Windows System events
+
+Restarted the Wazuh agent after configuration changes.
+
+## 5. Windows Event ID 4104 – PowerShell Script Block Logging
+
+Event ID 4104 records PowerShell script block execution.
+
+Generated harmless PowerShell test activity:
+
+```powershell
+powershell.exe -NoProfile -Command "Write-Output 'SOC_Lab_PowerShell_Test'"
+```
+
+Verified the generated event locally in Windows Event Viewer and confirmed PowerShell Event ID 4104 events were available in Wazuh.
+
+## 6. Wazuh Detection Findings
+
+Observed PowerShell activity in Wazuh Threat Hunting.
+
+| Field | Observed Value |
+|---|---|
+| Agent Name | DESKTOP-L29HLL9 |
+| Event ID | 4104 |
+| Rule ID | 91816 |
+| Rule Description | Powershell script querying system environment variables |
+| Rule Level | 4 |
+| Detection Status | Detected |
+
+### Observed PowerShell Script
+
+```powershell
+secedit /export /cfg $env:TEMP\secpol.cfg
+Get-Content $env:TEMP\secpol.cfg |
+Select-String ResetLockoutCount
+Remove-Item $env:TEMP\secpol.cfg
+```
+
+### Investigation
+
+The script performs the following operations:
+
+1. Exports local Windows security policy.
+2. Searches for the account lockout reset setting.
+3. Removes the temporary exported file.
+
+**Assessment:** Likely benign security-policy inspection activity. No evidence from this event alone establishes malicious behavior.
+
+## 7. Suspicious PowerShell Pattern Investigation
+
+Searched Wazuh events for common suspicious PowerShell indicators:
+
+- EncodedCommand
+- FromBase64String
+- DownloadString
+- Invoke-Expression
+
+**Result:** No matching events were found during the selected 24-hour search period.
+
+This does not prove that malicious PowerShell activity never occurred; it only describes the search results.
+
+## 8. Sysmon Process Monitoring
+
+Verified Sysmon Event ID 1 locally on Windows.
+
+Event ID 1 records process creation.
+
+Successfully observed PowerShell process execution, including the test command:
+
+```powershell
+powershell.exe -NoProfile -Command "Write-Output 'SOC_Module7_Detection_Test'"
+```
+
+**Wazuh verification:** Sysmon Event ID 1 was not confirmed in Wazuh using the attempted query. Its local generation was verified, but SIEM ingestion remains pending validation.
+
+## 9. SOC Analyst L1 Investigation Process
+
+A SOC Analyst L1 can investigate suspicious PowerShell activity by reviewing:
+
+1. PowerShell script block content.
+2. Process name and command line.
+3. Parent process.
+4. Executing user account.
+5. Event timestamp.
+6. Wazuh rule ID and severity.
+7. Related endpoint events.
+
+Alerts should be assessed using surrounding activity and organizational context before escalation.
+
+## 10. Project Results
+
+| Test | Result |
+|---|---|
+| PowerShell Operational Log | Enabled |
+| Event ID 4104 | Verified locally |
+| PowerShell Events in Wazuh | Confirmed |
+| Wazuh Rule 91816 | Observed |
+| Suspicious Pattern Search | No matching results |
+| Sysmon Event ID 1 | Verified locally |
+| Sysmon Event ID 1 in Wazuh | Not confirmed |
+
+## 11. Conclusion
+
+This project demonstrated PowerShell activity monitoring and investigation using Wazuh and Sysmon.
+
+PowerShell Script Block Logging was enabled, Event ID 4104 was verified, and PowerShell activity was successfully observed in the Wazuh dashboard.
+
+The investigation also demonstrated how to review script contents, understand Wazuh rule severity, and assess whether activity is likely benign or suspicious.
+
+Sysmon process creation was verified locally, while its ingestion into Wazuh requires further validation.
+
+**Project Status:** Practical PowerShell monitoring and investigation completed; Sysmon ingestion validation remains pending.
