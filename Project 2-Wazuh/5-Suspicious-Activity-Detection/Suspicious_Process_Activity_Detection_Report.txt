@@ -1,0 +1,311 @@
+# Suspicious Process Activity Detection Using Wazuh SIEM
+
+## 1. Project Overview
+
+This project focuses on monitoring and investigating Windows process creation activities using Wazuh SIEM. The main objective is to identify newly created processes, examine their execution details, and investigate potentially suspicious process activity.
+
+Windows process creation events provide valuable information about applications and commands executed on a computer. By monitoring Windows Security Event ID 4688, security analysts can investigate process names, parent processes, command-line arguments, and process execution times.
+
+Wazuh was used as the centralized security monitoring platform to collect and analyze Windows endpoint security events.
+
+## 2. Project Objectives
+
+The main objectives of this project are
+
+- Monitor Windows process creation activities.
+- Enable Windows process creation auditing.
+- Collect Event ID 4688 from Windows endpoints.
+- Monitor process execution details.
+- Examine PowerShell process activity.
+- Identify parent and child process relationships.
+- Investigate unusual process execution.
+- Create a monitoring dashboard in Wazuh.
+- Understand how SOC analysts investigate suspicious processes.
+
+## 3. Lab Environment
+
+The following environment was used to perform this project.
+
+ Component  Details 
+------
+ Host Operating System  Windows 11 Pro 
+ SIEM Platform  Wazuh 
+ Wazuh Version  4.14.10 
+ Linux Environment  Ubuntu 24.04 LTS 
+ Deployment  Docker Desktop with WSL2 
+ Endpoint Agent  Wazuh Windows Agent 
+ Agent ID  002 
+ Endpoint Name  DESKTOP-L29HLL9 
+ Log Source  Windows Security 
+ Monitoring Event ID  4688 
+
+## 4. Tools and Technologies Used
+
+Wazuh SIEM Used to collect, monitor, and investigate Windows security events.
+
+Windows Event Viewer Used to examine Windows Security logs and verify process creation events.
+
+Windows PowerShell Used to generate harmless test processes and investigate running processes.
+
+Docker Desktop Used to run Wazuh Manager, Indexer, and Dashboard containers.
+
+Ubuntu 24.04 Used as the Linux environment for managing the Wazuh Docker deployment.
+
+## 5. Windows Process Creation Auditing
+
+Windows process creation auditing was enabled to record when new processes are started.
+
+The following configuration was enabled
+
+- Local Security Policy.
+- Advanced Audit Policy Configuration.
+- System Audit Policies.
+- Detailed Tracking.
+- Audit Process Creation.
+- Success auditing.
+
+This configuration allows Windows to generate Security Event ID 4688 when a new process is created.
+
+The audit policy was checked using
+
+```powershell
+auditpol get subcategoryProcess Creation
+```
+
+## 6. Command-Line Logging Configuration
+
+Command-line logging was enabled through Group Policy.
+
+Configuration path
+
+Computer Configuration → Administrative Templates → System → Audit Process Creation → Include command line in process creation events.
+
+The setting was enabled to include command-line information in process creation events.
+
+The Group Policy was refreshed using
+
+```powershell
+gpupdate force
+```
+
+This helps security analysts understand which commands were used to launch processes.
+
+## 7. Process Creation Event Monitoring
+
+Windows Security Event ID 4688 was used to monitor newly created processes.
+
+A harmless PowerShell test was performed
+
+```powershell
+Start-Process powershell.exe
+```
+
+The following command was executed in the newly opened PowerShell window
+
+```powershell
+Write-Output SOC Lab PowerShell Test
+```
+
+The process creation activity was examined in Windows Event Viewer and Wazuh Threat Hunting.
+
+The following event fields were reviewed
+
+ Field  Description 
+------
+ Event ID  Windows process creation event 
+ New Process Name  Name and path of the newly created process 
+ Command Line  Command used to launch the process 
+ Parent Process Name  Process that launched the new process 
+ Process ID  Identifier assigned to the process 
+ Subject User Name  Account associated with the process creation event 
+ Creation Time  Time when the process was started 
+
+## 8. Wazuh Event Investigation
+
+Wazuh Threat Hunting was used to search for Windows process creation events.
+
+The following query was used
+
+```text
+agent.id 002 AND data.win.system.eventID 4688
+```
+
+The investigation confirmed that Event ID 4688 events were available in Wazuh.
+
+One observed event contained the following details
+
+ Field  Observed Value 
+------
+ Agent ID  002 
+ Agent Name  DESKTOP-L29HLL9 
+ Event ID  4688 
+ Process Name  splunk-optimize.exe 
+ Parent Process  splunkd.exe 
+ Log Channel  Security 
+ User  DESKTOP-L29HLL9$ 
+
+The observed process was associated with the installed Splunk application. It was not classified as malware.
+
+## 9. Suspicious Process Investigation
+
+PowerShell processes were examined using Windows Management Instrumentation.
+
+The following PowerShell command was used
+
+```powershell
+Get-CimInstance Win32_Process 
+Where-Object {$_.Name -match powershellpwsh} 
+Select-Object Name, ProcessId, ParentProcessId, CommandLine
+```
+
+Three PowerShell processes were identified.
+
+Their parent processes were investigated using
+
+```powershell
+Get-CimInstance Win32_Process 
+Where-Object {$_.Name -match powershellpwsh} 
+ForEach-Object {
+    $parent = Get-CimInstance Win32_Process -Filter ProcessId = $($_.ParentProcessId)
+    [PSCustomObject]@{
+        ProcessName = $_.Name
+        ProcessID = $_.ProcessId
+        ParentProcess = $parent.Name
+        ParentProcessID = $parent.ProcessId
+        CommandLine = $_.CommandLine
+    }
+}  Format-List
+```
+
+The investigation identified
+
+- Three running PowerShell processes.
+- Parent process explorer.exe.
+- Parent process ID 9524.
+- Most command-line values were empty.
+
+The process creation times and executable paths were examined using
+
+```powershell
+Get-CimInstance Win32_Process 
+Where-Object {$_.Name -eq powershell.exe} 
+Select-Object ProcessId, CreationDate, ExecutablePath
+```
+
+The following results were observed
+
+ Process ID  Creation Date  Executable Path 
+---------
+ 17212  12112026 085734  Not returned 
+ 12024  12112026 105329  Not returned 
+ 18896  12112026 105640  CWindowsSystem32WindowsPowerShellv1.0powershell.exe 
+
+The executable path of the third process was consistent with the standard Windows PowerShell installation location.
+
+## 10. Wazuh Dashboard and Visualizations
+
+A dashboard named SOC - Suspicious Process Monitoring was created to organize process monitoring information.
+
+The planned dashboard visualizations included
+
+### 10.1 Windows Process Creation Activity
+
+A line chart was configured to display process creation event counts over time.
+
+- Index pattern wazuh-alerts-
+- Metric Count
+- X-axis @timestamp
+- Aggregation Date Histogram
+- Event ID 4688
+
+### 10.2 Total Windows Process Creation Events
+
+A metric visualization was configured to display the total number of process creation events.
+
+- Metric Count
+- Filter Event ID 4688
+- Time range Last 24 hours
+- Buckets Not required
+
+### 10.3 Top 10 Executed Windows Processes
+
+A data table was configured to group process creation events by process name.
+
+- Metric Count
+- Aggregation Terms
+- Field data.win.eventdata.newProcessName
+- Order Count descending
+- Size 10
+- Filter Event ID 4688
+
+### 10.4 PowerShell Process Activity
+
+A data table was planned to examine PowerShell process creation activity and parent processes.
+
+The intended filter was
+
+```text
+data.win.system.eventID 4688 AND data.win.eventdata.newProcessName powershell.exe
+```
+
+PowerShell-specific results were not confirmed in Wazuh during this project.
+
+## 11. Investigation Findings
+
+The investigation produced the following findings
+
+1. Windows process creation auditing was configured.
+2. Windows Security Event ID 4688 was observed.
+3. Wazuh received process creation events from the Windows endpoint.
+4. Splunk-related process activity was observed.
+5. Three running PowerShell processes were identified using PowerShell commands.
+6. Their parent process was identified as explorer.exe.
+7. Process creation times and executable paths were examined.
+8. No malicious activity was confirmed from the examined processes.
+
+## 12. Limitations
+
+- PowerShell-specific process creation alerts were not successfully verified in Wazuh.
+- Command-line logging was configured, but the intended PowerShell command was not confirmed in a corresponding Wazuh event.
+- New test-folder FIM monitoring was not verified.
+- The custom suspicious-process detection rules were not implemented or validated in this module.
+- The dashboard visualizations should only be reported as completed if they were successfully saved and displayed.
+
+## 13. Conclusion
+
+This project demonstrated how Windows process creation monitoring can be performed using Wazuh SIEM.
+
+Windows Security Event ID 4688 was used to monitor newly created processes. Wazuh Threat Hunting was used to examine endpoint events, while PowerShell commands were used to investigate running processes, parent processes, process identifiers, execution paths, and creation times.
+
+The project provided practical experience in Windows endpoint monitoring, SIEM event investigation, process analysis, and basic SOC analyst investigation techniques.
+
+The knowledge gained from this project is useful for SOC Analyst Level 1 responsibilities, particularly endpoint monitoring, event analysis, and initial suspicious-process investigation.
+
+## 14. Skills Learned
+
+- Wazuh SIEM monitoring
+- Windows Event Log analysis
+- Windows process creation auditing
+- Event ID 4688 investigation
+- PowerShell process investigation
+- Parent-child process analysis
+- Command-line investigation
+- Windows endpoint monitoring
+- Security event analysis
+- SOC incident investigation fundamentals
+
+## 15. Project Evidence and Screenshots
+
+Attach the following screenshots where available
+
+1. Windows process creation audit policy configuration.
+2. Group Policy command-line logging configuration.
+3. Windows Event Viewer showing Event ID 4688.
+4. Wazuh Threat Hunting showing Event ID 4688.
+5. Wazuh process event details.
+6. PowerShell process investigation output.
+7. PowerShell process creation time and executable path.
+8. Windows Process Creation Activity dashboard.
+9. Total Windows Process Creation Events metric.
+10. Top 10 Executed Windows Processes table.
+11. Complete SOC - Suspicious Process Monitoring dashboard.
