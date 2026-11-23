@@ -1,0 +1,170 @@
+# Digital Forensics Investigation Using Autopsy
+
+**Project Type:** SOC Analyst L1 – Digital Forensics  
+**Case Name:** SOC_Digital_Forensics  
+**Case Number:** DF-001  
+**Examiner:** SOC Analyst  
+**Organization:** Cybersecurity Training Lab  
+**Tool:** Autopsy 4.22.1  
+**Operating System:** Windows 11  
+**Investigation Date:** 18 November 2026
+
+---
+
+## 1. Project Objective
+
+The objective of this project was to perform a digital forensic investigation using Autopsy and the NIST CFReDS NTFS forensic image.
+
+The investigation focused on examining filesystem artifacts, identifying deleted files, analysing file metadata, extracting a deleted-file candidate, and verifying the extracted file using SHA-256 hashing.
+
+## 2. Tools and Environment
+
+| Tool / Component | Purpose |
+|---|---|
+| Autopsy 4.22.1 | Digital forensic investigation |
+| Sleuth Kit (`istat`) | Filesystem metadata examination |
+| NIST CFReDS | Forensic disk image |
+| Windows PowerShell | SHA-256 hash verification |
+| Windows 11 | Investigation environment |
+
+## 3. Case Configuration
+
+A forensic case was created in Autopsy with the following details:
+
+- Case Name: SOC Digital Forensics
+- Case Number: DF-001
+- Examiner: SOC Analyst
+- Organization: Cybersecurity Training Lab
+- Base Directory: `C:\SOC_Projects\Autopsy`
+
+Two data sources were included in the case:
+
+1. LogicalFileSet1 – Logical evidence files.
+2. dfr-01-ntfs.dd – NIST CFReDS NTFS forensic image.
+
+## 4. Evidence Processing and Ingest Configuration
+
+The NIST NTFS image was processed using selected Autopsy ingest modules.
+
+The following modules were enabled:
+
+- Recent Activity
+- Hash Lookup
+- File Type Identification
+- Embedded File Extractor
+- Extension Mismatch Detector
+
+Keyword Search, Cyber Triage, and Malware Scanner were not enabled for the final NTFS image ingest.
+
+Both data source ingest jobs were reported as COMPLETED in the generated HTML report.
+
+## 5. Deleted File Investigation
+
+The Deleted Files view in Autopsy was examined to identify unallocated filesystem entries.
+
+### 5.1 Bunda.txt
+
+| Attribute | Finding |
+|---|---|
+| File Name | Bunda.txt |
+| Filesystem Path | `/img_dfr-01-ntfs.dd/vol_vol2/Bunda.txt` |
+| Autopsy Reported Size | 4,296 bytes |
+| File Name Allocation | Unallocated |
+| Metadata Allocation | Unallocated |
+| MFT Entry | 65 |
+| Sequence Number | 2 |
+| MD5 | `3b6467e47d36a18980f72a4ae14716ce` |
+| SHA-256 | `be9f9a4f99b5ce961d5c2759fff20543d0ffbedbd27be0c5157174bb46be8b85` |
+
+The Sleuth Kit `istat` examination identified a non-resident `$DATA` attribute with a recorded size of 4,296 bytes.
+
+The file was extracted from Autopsy and opened for inspection. Its contents contained repeated DFR block markers, plus-sign sequences, and character sequences rather than ordinary readable document text.
+
+The extracted file's SHA-256 hash was calculated using Windows PowerShell and matched the SHA-256 value recorded by Autopsy.
+
+**Recovery result:** File extracted successfully and hash verified.
+
+### 5.2 Castor.txt
+
+| Attribute | Finding |
+|---|---|
+| File Name | Castor.txt |
+| Filesystem Path | `/img_dfr-01-ntfs.dd/vol_vol2/Castor.txt` |
+| File Size | 0 bytes |
+| File Name Allocation | Unallocated |
+| Metadata Allocation | Unallocated |
+| MD5 | `d41d8cd98f00b204e9800998ecf8427e` |
+| SHA-256 | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+
+Sleuth Kit reported no data for this file. The recorded hashes correspond to an empty file.
+
+**Recovery result:** No file content was available for recovery.
+
+### 5.3 Other Deleted Files
+
+Other deleted-file entries were examined using the Sleuth Kit metadata functionality.
+
+Some entries returned the following error:
+
+`Error getting file metadata: Attribute not found in file (tsk_fs_attrlist_get_id: Attribute 0-0 not found)`
+
+These errors prevented successful metadata examination for those entries. No recovery success was claimed for them.
+
+## 6. SHA-256 Integrity Verification
+
+SHA-256 hashing was used to verify the extracted Bunda.txt file.
+
+The recovered file's SHA-256 value matched the value recorded by Autopsy:
+
+`be9f9a4f99b5ce961d5c2759fff20543d0ffbedbd27be0c5157174bb46be8b85`
+
+This confirms that the extracted file matches the data represented by Autopsy's recorded hash.
+
+## 7. Autopsy HTML Report
+
+An HTML forensic report was generated successfully.
+
+The report included:
+
+- Case information
+- Case number and examiner details
+- Data source information
+- Autopsy software and module versions
+- Ingest history
+- Ingest job completion status
+
+Both ingest jobs were marked COMPLETED.
+
+## 8. Investigation Findings
+
+The investigation produced the following findings:
+
+1. A NIST CFReDS NTFS forensic image was successfully analysed.
+2. Deleted-file entries were identified through Autopsy.
+3. Bunda.txt was extracted and its SHA-256 hash matched the recorded hash.
+4. The extracted Bunda.txt content consisted of repeated forensic block markers and character sequences.
+5. Castor.txt had a recorded size of zero bytes and no available content.
+6. Other deleted-file entries presented metadata attribute errors.
+7. An Autopsy HTML forensic report was generated successfully.
+
+## 9. Limitations
+
+- Not all deleted files could be examined successfully.
+- Some filesystem metadata attributes were unavailable.
+- Castor.txt contained no recoverable data.
+- The extracted Bunda.txt content was not ordinary readable document text.
+- A matching hash verifies consistency with the recorded hash but does not establish the original file's purpose or authenticity.
+
+## 10. Conclusion
+
+This project provided practical experience in digital forensic investigation using Autopsy and Sleuth Kit.
+
+The investigation covered forensic image analysis, filesystem metadata examination, deleted-file identification, file extraction, SHA-256 integrity verification, and forensic report generation.
+
+The project demonstrated how a SOC Analyst can use digital forensic tools to examine suspicious or deleted files, preserve evidence, validate extracted data, and document investigation findings.
+
+---
+
+**Project Status:** Completed  
+**Primary Result:** Bunda.txt extracted and SHA-256 verified  
+**Forensic Report:** HTML report generated using Autopsy 4.22.1
