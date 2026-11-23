@@ -1,0 +1,208 @@
+# Active Directory Security Monitoring and Investigation
+
+**Project Type:** SOC Analyst Level 1 – Hands-on Project  
+**Domain:** soclab.local  
+**Domain Controller:** SOC-DC01  
+**Operating System:** Windows Server 2022  
+**Virtualization:** Oracle VirtualBox  
+**Tools:** Active Directory Users and Computers, Group Policy Management, Windows Event Viewer, PowerShell  
+**Examiner:** SOC Analyst  
+**Organization:** Cybersecurity Training Lab
+
+---
+
+## 1. Project Overview
+
+The objective of this project was to configure Active Directory security auditing, monitor user and group activities, detect suspicious authentication attempts, and investigate security events using Windows Security Event Logs.
+
+The project simulates common SOC Analyst Level 1 responsibilities in a Windows domain environment.
+
+## 2. Project Objectives
+
+- Configure an Active Directory domain environment.
+- Implement password and account lockout policies.
+- Enable advanced Windows security auditing.
+- Monitor failed login attempts.
+- Detect user account creation, deletion, modification and password changes.
+- Monitor security group membership changes.
+- Investigate security events using Event Viewer.
+- Prepare security investigation findings and evidence.
+
+## 3. Lab Environment
+
+| Component | Configuration |
+|---|---|
+| Domain | soclab.local |
+| Domain Controller | SOC-DC01 |
+| Server OS | Windows Server 2022 |
+| Virtual Machine | Oracle VirtualBox |
+| Test OU | SOC_Users |
+| Test User | test.soc |
+| Existing User | rahul.sharma |
+| Log Source | Windows Security Event Log |
+
+## 4. Module 1 – Active Directory Setup
+
+Configured the Active Directory environment.
+
+Activities:
+- Installed and configured Active Directory Domain Services.
+- Created the domain `soclab.local`.
+- Configured the Domain Controller.
+- Created the `SOC_Users` Organizational Unit.
+- Created and managed domain user accounts.
+- Verified Active Directory user and organizational unit configuration.
+
+## 5. Module 2 – Password Policy and Account Lockout
+
+Configured the Default Domain Password Policy.
+
+| Policy | Configuration |
+|---|---|
+| Minimum password length | 10 characters |
+| Password complexity | Enabled |
+| Account lockout threshold | 5 attempts |
+| Account lockout duration | 15 minutes |
+| Observation window | 15 minutes |
+
+**Testing limitation:** The account lockout configuration was verified, but the expected lockout behavior was not successfully demonstrated. The `rahul.sharma` account showed `BadPwdCount = 3` and `LockedOut = False` during testing.
+
+Further validation is required.
+
+## 6. Module 3 – Advanced Auditing and Failed-Login Monitoring
+
+Configured Advanced Audit Policy through Group Policy Management.
+
+Auditing categories included:
+- Logon
+- Credential Validation
+- Kerberos Authentication Service
+- Account Lockout
+
+Enabled Success and Failure auditing for relevant categories.
+
+Important Event IDs:
+
+| Event ID | Description |
+|---|---|
+| 4624 | Successful logon |
+| 4625 | Failed logon |
+| 4768 | Kerberos authentication ticket requested |
+| 4771 | Kerberos pre-authentication failed |
+| 4776 | Credential validation |
+
+Used Windows Event Viewer to inspect authentication-related security events.
+
+## 7. Module 4 – User Account Management Monitoring
+
+Enabled **Audit User Account Management** with Success and Failure auditing.
+
+Performed test account management activities using the `test.soc` account.
+
+| Event ID | Activity |
+|---|---|
+| 4720 | User account created |
+| 4722 | User account enabled |
+| 4725 | User account disabled |
+| 4726 | User account deleted |
+| 4723 | Password change attempted |
+| 4724 | Password reset attempted |
+| 4738 | User account changed |
+
+Investigated the Subject and Target Account fields to identify who performed an action and which account was affected.
+
+## 8. Module 5 – Security Group and Privilege-Change Monitoring
+
+Enabled **Audit Security Group Management** with Success and Failure auditing.
+
+Created a test security group:
+
+`SOC_Lab_Security`
+
+Performed group membership operations using the `test.soc` account.
+
+Important Event IDs:
+
+| Event ID | Activity |
+|---|---|
+| 4728 | Member added to global security group |
+| 4729 | Member removed from global security group |
+| 4732 | Member added to local security group |
+| 4733 | Member removed from local security group |
+| 4756 | Member added to universal security group |
+| 4757 | Member removed from universal security group |
+
+Inspected Domain Admins membership without modifying privileged administrator accounts.
+
+## 9. Module 6 – Security Investigation
+
+Used Windows Event Viewer to investigate authentication, account management and security group activities.
+
+Investigation activities:
+
+1. Reviewed failed login events.
+2. Investigated user account creation and deletion.
+3. Reviewed password change and reset events.
+4. Investigated user account modifications.
+5. Reviewed security group membership changes.
+6. Inspected event details, including Subject, Target Account, Group Name and timestamps.
+
+### Investigation Findings
+
+The lab demonstrated how Windows Security Event Logs can be used to identify account and group management activities.
+
+Potential security concerns include:
+- Repeated failed login attempts.
+- Unexpected user account creation.
+- Unauthorized password resets.
+- Unexpected account modifications.
+- Unauthorized membership changes in privileged groups.
+
+All findings should be correlated with the expected lab activity before being classified as suspicious.
+
+## 10. Tools and Technologies Used
+
+- Windows Server 2022
+- Active Directory Domain Services
+- Group Policy Management Console
+- Windows Event Viewer
+- PowerShell
+- Advanced Audit Policy
+- Oracle VirtualBox
+
+## 11. Evidence and Screenshots
+
+The following evidence should be included with the project:
+
+| Evidence | Screenshot |
+|---|---|
+| Active Directory domain configuration | Module 1 |
+| Password policy configuration | Module 2 |
+| Advanced auditing configuration | Module 3 |
+| Failed login investigation | Module 3 / 6 |
+| User account creation and modification | Module 4 |
+| Password reset and password change events | Module 4 |
+| Security group membership changes | Module 5 |
+| Final security investigation | Module 6 |
+
+## 12. Limitations
+
+- Account lockout after five failed attempts was configured but not successfully demonstrated.
+- Additional testing is required to validate the lockout behavior.
+- Local security group monitoring was not demonstrated in the Domain Controller environment.
+- The project used a controlled virtual lab rather than a production Active Directory environment.
+
+## 13. Conclusion
+
+This project provided practical experience in Active Directory administration, Windows security auditing, authentication monitoring, user account management and security group monitoring.
+
+It demonstrated how a SOC Analyst Level 1 can use Windows Security Event Logs to investigate authentication failures, account changes and privilege-related activities.
+
+The project also provided hands-on experience with Group Policy, PowerShell and Windows Event Viewer, strengthening practical skills required for entry-level Security Operations Center roles.
+
+---
+
+**Project Status:** Core monitoring and investigation activities completed. Account lockout validation remains pending.
+
+**Prepared by:** SOC Analyst  
+**Project:** Active Directory Security Monitoring and Investigation
